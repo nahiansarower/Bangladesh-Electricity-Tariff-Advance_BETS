@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 namespace ETS
 {
@@ -10,8 +10,20 @@ namespace ETS
 
         public Breakdown()
         {
-            TarrifRate();
-            UserInput();
+            bool exit = true;
+            do
+            {
+                TarrifRate();
+                UserInput();
+
+                Console.WriteLine("To Continue Press any key Except || Exit Press E");
+                if (Console.ReadLine().ToUpper() == "E")
+                {
+                    exit = false;
+                }
+            }
+            while (exit);
+
         }
 
         public void TarrifRate()
@@ -45,16 +57,13 @@ namespace ETS
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("Please Enter Your Unit : ");
 
-            double tarrifInput;
-            // Check if the input is a valid number.
-            if (!double.TryParse(Console.ReadLine(), out tarrifInput))
+            if (!double.TryParse(Console.ReadLine(), out double tarrifInput))
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("\nInvalid input. Please enter a number.");
                 return;
             }
 
-            // Check for negative input first.
             if (tarrifInput < 0)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -84,7 +93,6 @@ namespace ETS
                 Console.WriteLine("-----------------");
             }
 
-            // Calculate the total bill and display the result.
             CalculateBill(tarrifInput, newArray);
         }
 
@@ -98,14 +106,11 @@ namespace ETS
             Console.WriteLine("\nStep-by-Step Calculation:");
             Console.WriteLine("----------------------------------------------------");
 
-            // Loop through each slab to calculate the cost.
             for (int i = 0; i < Consumer.Length; i++)
             {
-                // The number of units in the current slab is the slab's upper limit minus the previous slab's upper limit.
                 double unitsInSlab = Consumer[i] - previousSlabUnit;
                 double unitsToBill = 0;
 
-                // If the user's total units are more than the current slab's units, bill the whole slab.
                 if (remainingUnits > unitsInSlab)
                 {
                     unitsToBill = unitsInSlab;
@@ -114,18 +119,16 @@ namespace ETS
                     remainingUnits -= unitsInSlab;
                     Console.WriteLine($"STEP {i + 1} : ({previousSlabUnit} - {Consumer[i]}): {unitsToBill} units * {tarrifRate[i]:F2} Taka/unit = {slabCost:F2} Taka");
                 }
-                // If the user's units fall within this slab, bill only the remaining units.
                 else
                 {
                     unitsToBill = remainingUnits;
                     double slabCost = unitsToBill * tarrifRate[i];
                     totalCost += slabCost;
-                    remainingUnits = 0; // All units have been billed.
+                    remainingUnits = 0;
                     Console.WriteLine($"STEP {i + 1} : ({previousSlabUnit} - {Consumer[i]}): {unitsToBill} units * {tarrifRate[i]:F2} Taka/unit = {slabCost:F2} Taka");
-                    break; // Exit the loop because we're done.
+                    break; 
                 }
 
-                // Update the previous slab's unit for the next iteration.
                 previousSlabUnit = Consumer[i];
             }
 
