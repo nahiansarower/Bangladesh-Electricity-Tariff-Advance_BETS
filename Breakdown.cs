@@ -111,7 +111,7 @@ namespace ETS
                 double unitsInSlab = Consumer[i] - previousSlabUnit;
                 double unitsToBill = 0;
 
-                if (remainingUnits > unitsInSlab)
+                if (remainingUnits >= unitsInSlab)
                 {
                     unitsToBill = unitsInSlab;
                     double slabCost = unitsToBill * tarrifRate[i];
